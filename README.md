@@ -7,8 +7,8 @@ Esta librería simplifica algunos aspectos de la comunicación por WiFi para la 
 class IOTDlabs {
  
   /*--------Properties-------------*/
+    
     int _baud;
-
     char* ssid;
     char* password;
     char* _host;
