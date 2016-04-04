@@ -37,22 +37,6 @@ void loop(void)
       }
    }
       
-  delay(500);  while (RXTX.available()){
-    Serial.write(RXTX.read());
-  }
-  delay(500);
-  //Hay que seleccionar No ajuste de linea desde el monitor serial
-  while (Serial.available()){
-      String data = Serial.readString();
-      if (data == cmd){
-         Serial.println("SendPOST");
-         wifi.simplePOST(postdata);
-      }else{
-         Serial.println("SendAT");
-         RXTX.println(data);
-      }
-   }
-      
-  delay(500);
+  delay(500);  
 }
 
