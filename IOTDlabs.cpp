@@ -419,6 +419,98 @@ void IOTDlabs::sendhttpPOST(){
     }
 };
 
+
+void IOTDlabs::multipleTCP(){
+    char* cmd = "$";
+
+    if (IOTDlabs::enableMUX()) {
+        Serial.print("Multiple TCP OK\r\n");
+    } else {
+        Serial.print("Multiple TCP ERROR\r\n");
+    }
+
+    while (!Serial.available() ){
+        
+        Serial.println("Write module number to connect in network (max number : 0 ~ 4) or press $ to exit");
+
+        while (!Serial.available()){
+            
+        }
+        String sndevice = Serial.readString();
+
+        if (sndevice == cmd){
+            break;
+        }
+        int ndevice = sndevice.toInt();
+
+        Serial.println("Write IP number module number to connect in network");
+
+        while (!Serial.available()){
+            
+        }
+        String snIP = Serial.readString();
+        String IP = "\""+snIP+"\"";
+        Serial.println("Write Port module number to connect in network");
+
+        while (!Serial.available()){
+            
+        }
+        String snPort = Serial.readString();
+        int nPort = snPort.toInt();
+
+        if (IOTDlabs::createTCP(ndevice, snIP, nPort)) {
+            Serial.print("SUCCESS on TCP connection for IP: ");
+            Serial.print(snIP);
+            Serial.print(" on channel: ");
+            Serial.println(ndevice);
+            Serial.println("Write message to module: ");
+
+            while (!Serial.available()){
+                
+            }
+            String message = Serial.readString();
+            IOTDlabs::sendTCP(ndevice, message);
+
+        } else {
+            Serial.print("FAIL on TCP connection for IP: ");
+            Serial.print(snIP);
+            Serial.print(" on channel: ");
+            Serial.println(ndevice);
+        }
+    }
+    Serial.println("Write any Command");
+}
+
+void IOTDlabs::sendTCP(uint8_t mux_id, String msg, uint32_t timeout ){
+
+    uint8_t buffer[128] = {0};
+
+    if (IOTDlabs::send(mux_id,(const uint8_t*)msg.c_str(), strlen(msg.c_str()))) {
+        Serial.println("send OK");
+    } else {
+        Serial.println("send ERROR");
+    }
+
+    uint32_t len = IOTDlabs::recv(mux_id, buffer, sizeof(buffer), timeout);
+    if (len > 0) {
+        Serial.print("Received:[");
+        for(uint32_t i = 0; i < len; i++) {
+            Serial.print((char)buffer[i]);
+        }
+        Serial.print("]\r\n");
+    }
+ 
+    if (IOTDlabs::releaseTCP(mux_id)) {
+        Serial.print("release tcp ");
+        Serial.print(mux_id);
+        Serial.println(" OK");
+    } else {
+        Serial.print("release tcp ");
+        Serial.print(mux_id);
+        Serial.println(" ERROR");
+    }
+}
+
 /*---------------------------------------------------------------------------------*/
 /*--------------------------ITEADLIB_Arduino_WeeESP8266----------------------------*/
 /*----------------https://github.com/itead/ITEADLIB_Arduino_WeeESP8266-------------*/

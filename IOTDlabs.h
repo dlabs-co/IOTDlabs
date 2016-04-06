@@ -145,6 +145,8 @@ class IOTDlabs {
     void sendhttpGET();
     void sendhttpPOST();
 
+    void multipleTCP();
+
     /**------------------------------ ESP8266 Layer ------------------------------------------*/
     /**------------------------------ Github Library ------------------------------------------*/
     /**------------- https://github.com/itead/ITEADLIB_Arduino_WeeESP8266 ---------------------*/
@@ -696,7 +698,7 @@ class IOTDlabs {
     uint32_t recv(uint8_t *coming_mux_id, uint8_t *buffer, uint32_t buffer_size, uint32_t timeout = 1000);
 
  private:
-
+    void sendTCP(uint8_t mux_id, String msg, uint32_t timeout = 2000);
     /* 
      * Empty the buffer or UART RX.
      */
